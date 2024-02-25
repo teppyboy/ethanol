@@ -111,12 +111,12 @@ def build_wine():
     """
     info("Building wine-tkg-git...")
     info("Executing actual build script...")
-    # retcode = subprocess.call(
-    #     ["bash", "./non-makepkg-build.sh"], cwd=wine_tkg_path.joinpath("wine-tkg-git")
-    # )
-    # if retcode != 0:
-    #     error("Failed to build wine.")
-    #     return False
+    retcode = subprocess.call(
+        ["bash", "./non-makepkg-build.sh"], cwd=wine_tkg_path.joinpath("wine-tkg-git")
+    )
+    if retcode != 0:
+        error("Failed to build wine.")
+        return False
     info("Wine built successfully, moving output to 'dist' directory...")
     partial_name: str = None
     for line in wine_tkg_path.joinpath("wine-tkg-git/last_build_config.log").read_text().splitlines():
