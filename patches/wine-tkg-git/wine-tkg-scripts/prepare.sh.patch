@@ -1,0 +1,11 @@
+--- a/wine-tkg-git/wine-tkg-scripts/prepare.sh	2023-03-13 21:06:27.165664944 +0700
++++ b/wine-tkg-git/wine-tkg-scripts/prepare.sh	2023-04-21 01:02:46.770571224 +0700
+@@ -372,7 +372,7 @@
+   fi
+ 
+   # Load legacy options only when a custom commit is set
+-  if [ "$_LOCAL_PRESET" != "valve" ] && [[ "$_LOCAL_PRESET" != valve-exp* ]]; then
++  if [ "$_LOCAL_PRESET" != "valve" ] && [[ "$_LOCAL_PRESET" != valve-exp* ]] && [[ "$_LOCAL_PRESET" != "nightmare" ]]; then
+     if [ -n "$_plain_version" ] || [ -n "$_staging_version" ]; then
+       if [ -e "$_proton_tkg_path"/proton_tkg_token ]; then
+         msg2 "Loading legacy config file"

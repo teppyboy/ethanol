@@ -1,0 +1,16 @@
+[tool.poetry]
+name = "ethanol"
+version = "0.1.0"
+description = "Wine-tkg tweaker written in Python"
+authors = ["tretrauit <tretrauit@gmail.com>"]
+license = "MIT"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+inicfp = {git = "https://github.com/teppyboy/inicfp", rev = "v0.2.4"}
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
