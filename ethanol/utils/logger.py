@@ -1,17 +1,24 @@
+import logging
+
+
 __all__ = ["debug", "info", "warn", "error"]
+logging.basicConfig(
+    level=logging.DEBUG, format="%(asctime)s %(name)s [%(levelname)s] %(message)s"
+)
+logger = logging.getLogger("ethanol")
 
 
-def debug(*args, **kwargs):
-    print("[DEBUG]:", *args, **kwargs)
+def debug(msg, *args):
+    logging.debug(msg, *args)
 
 
-def info(*args, **kwargs):
-    print("[INFO]:", *args, **kwargs)
+def info(msg, *args):
+    logging.info(msg, *args)
 
 
-def warn(*args, **kwargs):
-    print("[WARNING]:", *args, **kwargs)
+def warn(msg, *args):
+    logging.warning(msg, *args)
 
 
-def error(*args, **kwargs):
-    print("[ERROR]:", *args, **kwargs)
+def error(msg, *args):
+    logging.error(msg, *args)
