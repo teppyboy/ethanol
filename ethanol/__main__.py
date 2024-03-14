@@ -151,7 +151,7 @@ def bundle_nvml():
 
 def main():
     info("Ethanol - Wine-tkg-git quick patcher")
-    for job in [update_sources, patch_tkg, build_wine, nvml.build, bundle_nvml]:
+    for job in [(update_sources, True), (patch_tkg, True), (build_wine, True), (nvml.build, False), (bundle_nvml, True)]:
         if not job():
             error("Job failed, aborting.")
             return

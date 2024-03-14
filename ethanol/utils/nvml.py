@@ -32,6 +32,10 @@ def update_source():
 def build():
     """Build wine-nvml"""
     info("Building wine-nvml...")
-    subprocess.call(["bash", "./build.sh"], cwd=BASE_PATH)
-    info("Built wine-nvml.")
-    return True
+    retcode = subprocess.call(["bash", "./build.sh"], cwd=BASE_PATH)
+    if retcode == 0:
+        info("Built wine-nvml.")
+        return True
+    else:
+        error("Failed to build wine-nvml.")
+        return False
