@@ -9,16 +9,16 @@ logger = logging.getLogger("ethanol")
 
 
 def debug(msg, *args):
-    logging.debug(msg, *args)
+    logger.debug(msg, *args)
 
 
 def info(msg, *args):
-    logging.info(msg, *args)
+    logger.info(msg, *args)
 
 
 def warn(msg, *args):
-    logging.warning(msg, *args)
+    logger.warning(msg, *args)
 
 
 def error(msg, *args):
-    logging.error(msg, *args)
+    logger.error(msg, *args)

@@ -34,6 +34,12 @@ def build():
     """Build wine-nvml"""
     logger.info("Resetting repo state (to fix building issue)...")
     subprocess.call(["git", "reset", "--hard"], cwd=BASE_PATH)
+    if BASE_PATH.joinpath("./build-mingw64").is_dir():
+        logger.info("Reconfiguring build (mingw64) directory...")
+        subprocess.call(["meson", "setup", "--wipe",  "--cross-file", "./cross-mingw64.txt", "./build-mingw64"], cwd=BASE_PATH)
+    if BASE_PATH.joinpath("./build-wine64").is_dir():
+        logger.info("Reconfiguring build (wine64) directory...")
+        subprocess.call(["meson", "setup", "--wipe",  "--cross-file", "./cross-wine64.txt", "./build-wine64"], cwd=BASE_PATH)
     logger.info("Building wine-nvml...")
     retcode = subprocess.call(["bash", "./build.sh"], cwd=BASE_PATH)
     if retcode == 0:

@@ -2,7 +2,6 @@
 
 import inicfp
 import subprocess
-from datetime import datetime
 from ethanol.utils.logger import debug, info, warn, error
 from ethanol.utils import nvml
 from pathlib import Path
@@ -126,10 +125,13 @@ def build_wine():
     ):
         if "Wine (plain) version:" in line:
             partial_name = line.split(":")[1].strip()
-            break
+        elif "Using wine-staging patchset" in line:
+            # For some reason wine-tkg-git decides to use this as the name instead.
+            partial_name = line.split("(version")[1].strip()[:-1]
     if not partial_name:
         error("Failed to find wine output name.")
         return False
+    debug(f"Partial name: {partial_name}")
     for file in wine_tkg_path.joinpath("wine-tkg-git/non-makepkg-builds/").iterdir():
         if not file.is_dir():
             continue
