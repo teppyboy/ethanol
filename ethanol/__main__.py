@@ -90,7 +90,7 @@ def patch_tkg(patches: Path = Path("./patches")):
         replace_list: list[dict] = eval(replace_path.read_text())
         for replace_file in replace_list:
             for replace in replace_file["replace"]:
-                for maybe_path in replace_file['path']:
+                for maybe_path in replace_file["path"]:
                     if "*" in maybe_path:
                         paths = wine_tkg_path.glob(maybe_path)
                     else:
@@ -119,7 +119,11 @@ def build_wine():
         return False
     info("Wine built successfully, moving output to 'dist' directory...")
     partial_name: str = None
-    for line in wine_tkg_path.joinpath("wine-tkg-git/last_build_config.log").read_text().splitlines():
+    for line in (
+        wine_tkg_path.joinpath("wine-tkg-git/last_build_config.log")
+        .read_text()
+        .splitlines()
+    ):
         if "Wine (plain) version:" in line:
             partial_name = line.split(":")[1].strip()
             break
@@ -143,18 +147,33 @@ def bundle_nvml():
     wine_path = DIST_PATH.joinpath(wine_tkg_out_name)
     info("Copying NVML to wine output directory...")
     nvml_path = nvml.BASE_PATH
-    copy2(nvml_path.joinpath("build-wine64/src/nvml.so"), wine_path.joinpath("lib/wine/x86_64-unix/nvml.so"))
-    copy2(nvml_path.joinpath("build-mingw64/src/nvml.dll"), wine_path.joinpath("lib/wine/x86_64-windows/nvml.dll"))
+    copy2(
+        nvml_path.joinpath("build-wine64/src/nvml.so"),
+        wine_path.joinpath("lib/wine/x86_64-unix/nvml.so"),
+    )
+    copy2(
+        nvml_path.joinpath("build-mingw64/src/nvml.dll"),
+        wine_path.joinpath("lib/wine/x86_64-windows/nvml.dll"),
+    )
     info("NVML bundled successfully.")
     return True
 
 
 def main():
     info("Ethanol - Wine-tkg-git quick patcher")
-    for job in [(update_sources, True), (patch_tkg, True), (build_wine, True), (nvml.build, False), (bundle_nvml, True)]:
-        if not job():
-            error("Job failed, aborting.")
-            return
+    for job in [
+        (update_sources, True),
+        (patch_tkg, True),
+        (build_wine, True),
+        (nvml.build, False),
+        (bundle_nvml, False),
+    ]:
+        if not job[0]():
+            if job[1]:
+                error("Job failed, aborting...")
+                return
+            else:
+                warn("Job failed, continuing...")
 
 
 if __name__ == "__main__":
