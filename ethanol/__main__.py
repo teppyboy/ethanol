@@ -89,7 +89,9 @@ def patch_tkg(patches: Path = Path("./patches")):
         replace_list: list[dict] = eval(replace_path.read_text())
         for replace_file in replace_list:
             for replace in replace_file["replace"]:
-                for maybe_path in replace_file["path"]:
+                replace_path = replace_file["path"]
+                info(f"Replacing '{list(replace.keys())}' with '{list(replace.values())}' in {str(replace_path)}...")
+                for maybe_path in replace_path:
                     if "*" in maybe_path:
                         paths = wine_tkg_path.glob(maybe_path)
                     else:
@@ -97,7 +99,6 @@ def patch_tkg(patches: Path = Path("./patches")):
                     for file in paths:
                         file_content = file.read_text()
                         for from_text, to in replace.items():
-                            info(f"Replacing '{from_text}' with '{to}' in '{file}'...")
                             file_content = file_content.replace(from_text, to)
                         file.write_text(file_content)
     info("Patched wine-tkg successfully.")

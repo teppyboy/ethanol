@@ -27,7 +27,7 @@ E.g. `wine-tkg-git/wine-tkg-scripts/prepare.sh.patch` will patch `wine-tkg-git/w
 
 Also there's `replace.py` where you can define which files to replace the content.
 
-The default preset is tweaked for Valve bleeding-edge with some patches and branding.
+The default preset is tweaked for wine-staging with some patches and branding.
 
 ## License
 
