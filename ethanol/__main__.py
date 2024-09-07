@@ -150,14 +150,19 @@ def bundle_nvml():
     wine_path = DIST_PATH.joinpath(wine_tkg_out_name)
     info("Copying NVML to wine output directory...")
     nvml_path = nvml.BASE_PATH
-    copy2(
-        nvml_path.joinpath("build-wine64/src/nvml.so"),
-        wine_path.joinpath("lib/wine/x86_64-unix/nvml.so"),
-    )
-    copy2(
-        nvml_path.joinpath("build-mingw64/src/nvml.dll"),
-        wine_path.joinpath("lib/wine/x86_64-windows/nvml.dll"),
-    )
+    try:
+        copy2(
+            nvml_path.joinpath("build-wine64/src/nvml.so"),
+            wine_path.joinpath("lib/wine/x86_64-unix/nvml.so"),
+        )
+        copy2(
+            nvml_path.joinpath("build-mingw64/src/nvml.dll"),
+            wine_path.joinpath("lib/wine/x86_64-windows/nvml.dll"),
+        )
+    except Exception as e:
+        error(f"Failed to copy NVML: {e}")
+        error("Probably Wine build failed. :(")
+        return False
     info("NVML bundled successfully.")
     return True
 
