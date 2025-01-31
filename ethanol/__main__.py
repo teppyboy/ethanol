@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+import argparse
 import inicfp
 import subprocess
 from ethanol.utils.logger import debug, info, warn, error
@@ -90,7 +91,9 @@ def patch_tkg(patches: Path = Path("./patches")):
         for replace_file in replace_list:
             for replace in replace_file["replace"]:
                 replace_path = replace_file["path"]
-                info(f"Replacing '{list(replace.keys())}' with '{list(replace.values())}' in {str(replace_path)}...")
+                info(
+                    f"Replacing '{list(replace.keys())}' with '{list(replace.values())}' in {str(replace_path)}..."
+                )
                 for maybe_path in replace_path:
                     if "*" in maybe_path:
                         paths = wine_tkg_path.glob(maybe_path)
@@ -167,14 +170,42 @@ def bundle_nvml():
     return True
 
 
+def set_variant(variant: str):
+    customization = inicfp.loads(
+        wine_tkg_path.joinpath("wine-tkg-git/customization.cfg").read_text(),
+        comments=True,
+        whitespace=True,
+    )
+    customization["_LOCAL_PRESET"] = variant
+    wine_tkg_path.joinpath("wine-tkg-git/customization.cfg").write_text(
+        inicfp.dumps(customization).replace(" = ", "=")
+    )
+
+
 def main():
+    parser = argparse.ArgumentParser(
+        prog="ethanol",
+        description="Wine-tkg-git quick patcher",
+        epilog="https://github.com/teppyboy/ethanol",
+    )
+    parser.add_argument(
+        "variant",
+        default="nightmare-staging",
+        help="The variant of wine-tkg-git to build",
+    )
+    parser.add_argument(
+        "--without-nvml", action="store_true", default=False, help="Skip NVML building"
+    )
+    args = parser.parse_args()
     info("Ethanol - Wine-tkg-git quick patcher")
+    if not update_sources():
+        error("Failed to update sources, aborting...")
+        return
+    info("Setting variant to: " + args.variant)
+    set_variant(args.variant)
     for job in [
-        (update_sources, True),
         (patch_tkg, True),
         (build_wine, True),
-        (nvml.build, False),
-        (bundle_nvml, False),
     ]:
         if not job[0]():
             if job[1]:
@@ -182,6 +213,9 @@ def main():
                 return
             else:
                 warn("Job failed, continuing...")
+    if not args.without_nvml:
+        if nvml.build():
+            bundle_nvml()
 
 
 if __name__ == "__main__":
